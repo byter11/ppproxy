@@ -58,7 +58,6 @@ def proxy(data, conn, addr, cache, app):
 
   with app.app_context():
     query = Filter.query.filter(Filter.site.contains(name)).first()
-    print(query)
     if query:
       log.info(f'Filtered {name} (rule: {query.name})')
       return
