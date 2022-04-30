@@ -16,32 +16,32 @@ proxy_cache = Cache(Schedule.LRU)
 
 @app.route('/')
 def index():
-	return redirect('/admin/filter')
+  return redirect('/admin/filter')
 
 class AdminView(AdminIndexView):
-	@expose('/')
-	def index(self):
-		return self.render('/admin/index.html', schedule=proxy_cache.schedule.value)
+  @expose('/')
+  def index(self):
+    return self.render('/admin/index.html', schedule=proxy_cache.schedule.value)
 
 @app.route('/log')
 def log():
-	if os.path.exists('proxy.log'):
-		with open('proxy.log') as f:
-			return jsonify({"log": f.read()})
-	else:
-		return jsonify({"log": ""})
+  if os.path.exists('proxy.log'):
+    with open('proxy.log') as f:
+      return jsonify({"log": f.read()})
+  else:
+    return jsonify({"log": ""})
 
 @app.route('/schedule', methods=['POST', 'GET'])
 def schedule():
-	if request.method == 'POST':
-		schedule = json.loads(request.data.decode())['schedule']
-		print('set', schedule)
-		if schedule in [e.value for e in Schedule]:
-			proxy_cache.setschedule(Schedule(schedule))
-		# return Response('', status=400)
-		return {}
-	else:
-		return proxy_cache.schedule.value
+  if request.method == 'POST':
+    schedule = json.loads(request.data.decode())['schedule']
+    print('set', schedule)
+    if schedule in [e.value for e in Schedule]:
+      proxy_cache.setschedule(Schedule(schedule))
+    # return Response('', status=400)
+    return {}
+  else:
+    return proxy_cache.schedule.value
 
 
 import proxy
