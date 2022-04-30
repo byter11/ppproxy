@@ -1,9 +1,34 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-  <h3> Proxy log </h3>
-  <pre style="max-height: 50vh; overflow: auto" id="log"></pre>
+  <div class="row">
+    <div class="col-8">
+      <h3> Proxy log </h3>
+      <pre style="max-height: 50vh; overflow: auto" id="log"></pre>
+    </div>
+    <div class="col4">
+      <h3> Cache Schedule </h3>
+        <input id="lru" name="cache" type="radio" value="LRU" checked> LRU
+        <input id="fifo" name="cache" type="radio" value="FIFO"> FIFO
+    </div>
+  </div>
   <script>
+    document.getElementById('lru').addEventListener('click', (e) => setschedule(e, 'lru'))
+    document.getElementById('fifo').addEventListener('click', (e) => setschedule(e, 'fifo'))
+
+    function setschedule(e, sch){
+      console.log(e);
+      e.preventDefault();
+      fetch('/schedule', {
+        method: 'POST',
+        body: JSON.stringify({schedule: sch})
+      })
+      .then(res=> {
+        if(res.status == 200){
+          e.target.checked = true;
+        }
+      })
+    }
     setInterval(() => {
       fetch('/log').then(res => res.json())
       .then(res => {
