@@ -1,0 +1,14 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <h3> Proxy log </h3>
+  <pre style="max-height: 50vh; overflow: auto" id="log"></pre>
+  <script>
+    setInterval(() => {
+      fetch('/log').then(res => res.json())
+      .then(res => {
+        document.getElementById("log").innerText = res.log.split('\n').reverse().join('\n');
+      })
+    }, 1500)
+	</script>
+{% endblock %}
